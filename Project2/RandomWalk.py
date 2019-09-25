@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 
 from matplotlib import rc
 
+import scipy.integrate as integrate
+
 class RandomWalk():
 
     def __init__(self, eps, var_init):
@@ -19,7 +21,7 @@ class RandomWalk():
     def PDF(self, delta, Sc):
         #Analytic expression for the prob. distribution
         var = np.pi / Sc**4
-        value1 = 1/(np.sqrt(2*np.pi*var)) * np.exp(- delta**2 / (2*var))
+        value1 = 1./(np.sqrt(2*np.pi*var)) * np.exp(- delta**2 / (2*var))
         return value1
 
     def PDF_NC(self, delta, Sc):
@@ -70,7 +72,11 @@ class RandomWalk():
 
         #Resetting the variables
         self.Sc = self.Sc_init
-        self.delta = 0
+        #self.delta = 0
+
+        var = self.variance()
+        self.delta = np.random.normal(scale=np.sqrt(var))
+
         check = 0
 
         while self.Sc > 1:
@@ -140,10 +146,12 @@ class RandomWalk():
 
         #Plotting vector and analytic values
         delta_crit_vec = np.linspace(np.min(delta_crit_arr), np.max(delta_crit_arr), len(delta_crit_arr))
-        analytic = self.PDF_NC(delta_crit_vec, Sc_crit_arr)
+        analytic2 = self.PDF_NC(delta_crit_vec, Sc_crit_arr)
+
+        analytic2norm = analytic2 / np.trapz(analytic2,delta_crit_vec)
 
         plt.hist(delta_crit_arr, bins=50, histtype='bar', ec='black', color = 'green', label='Random Walk', density = True)
-        plt.plot(delta_crit_vec, analytic, color = "black", linewidth = 1, label = "Analytic PDF")
+        plt.plot(delta_crit_vec, analytic2norm, color = "black", linewidth = 1, label = "Analytic PDF") #ONLY FITS WITH RANDOM SCALING OF ~2.5 ?????
 
 
         plt.xlabel(r'$\delta$', fontsize=20)
@@ -155,8 +163,20 @@ class RandomWalk():
 
 if __name__ == '__main__':
     initial_var = 0.5e-4 #Half of 10^-4
-    eps = 1e-2
-    N = int(1e3)
+    eps = 1e-1
+    N = int(1e4)
     RW = RandomWalk(eps,initial_var)
+
+    """
+    #Test if analytic function is normalized???
+    def PDF_test(delta):
+        #Analytic expression for the prob. distribution
+        var = np.pi / 1**4
+        value1 = 1./(np.sqrt(2*np.pi*var)) * np.exp(- delta**2 / (2*var))
+        return value1
+
+    I = integrate.quad(PDF_test, -6,1)
+    print(I)
+    """
     #output = RW.Distribution(N)
     output = RW.NC_Distribution(N)

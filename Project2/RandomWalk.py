@@ -163,7 +163,7 @@ class RandomWalk():
 
 if __name__ == '__main__':
     initial_var = 0.5e-4 #Half of 10^-4
-    eps = 1e-1
+    eps = 1e-2
     N = int(1e4)
     RW = RandomWalk(eps,initial_var)
 
@@ -178,5 +178,5 @@ if __name__ == '__main__':
     I = integrate.quad(PDF_test, -6,1)
     print(I)
     """
-    #output = RW.Distribution(N)
-    output = RW.NC_Distribution(N)
+    output = RW.Distribution(N)
+    #output = RW.NC_Distribution(N)

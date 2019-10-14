@@ -178,5 +178,5 @@ if __name__ == '__main__':
     I = integrate.quad(PDF_test, -6,1)
     print(I)
     """
-    output = RW.Distribution(N)
-    #output = RW.NC_Distribution(N)
+    #output = RW.Distribution(N)
+    output = RW.NC_Distribution(N)
